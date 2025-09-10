@@ -9,6 +9,21 @@
 # packages, and plugins designed to encourage good coding practices.
 include: package:flutter_lints/flutter.yaml
 
+analyzer:
+  errors:
+    invalid_annotation_target: ignore
+  plugins:
+    - custom_lint
+  exclude:
+    - "build/**"
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "**/g.dart"
+    - "**/freezed.dart"
+
+formatter:
+  trailing_commas: preserve
+
 linter:
   # The lint rules applied to this project can be customized in the
   # section below to disable rules from the `package:flutter_lints/flutter.yaml`
@@ -20,9 +35,29 @@ linter:
   # or a specific dart file by using the `// ignore: name_of_lint` and
   # `// ignore_for_file: name_of_lint` syntax on the line or in the file
   # producing the lint.
+
   rules:
-    # avoid_print: false  # Uncomment to disable the `avoid_print` rule
-    # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
+    - library_names
+
+    - prefer_const_constructors
+    - prefer_const_literals_to_create_immutables
+    - prefer_final_locals
+
+    - require_trailing_commas
+
+    - avoid_unnecessary_containers
+
+    - always_declare_return_types
+
+    - file_names
+
+    - avoid_print
+    - avoid_empty_else
+    - avoid_catches_without_on_clauses
+    - avoid_unused_constructor_parameters
+
+    - lines_longer_than_80_chars
+
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
