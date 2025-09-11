@@ -1,3 +1,5 @@
+import 'dart:developer' as developer show log;
+
 import 'package:dio/dio.dart';
 import 'package:news_app/core/services/secure_storage_service.dart';
 import 'package:news_app/features/home/data/model/top_heading_model.dart';
@@ -12,16 +14,17 @@ class ApiService {
 
   Future<TopHeadingModel> getTopHeadline({
     required int page,
-    int pageSize = 20,
     String category = 'general',
     String country = 'us',
+    String searchKeyWord = '',
   }) async {
     final apiKey = await SecureStorageService().getDate(key: "api_key");
 
     try {
       final response = await dioClient.dio.get(
-        '/top-headlines?apiKey=$apiKey&country=$country&category=$category&pageSize=$pageSize&page=$page',
+        '/top-headlines?apiKey=$apiKey&q=$searchKeyWord&country=$country&category=$category&page=$page',
       );
+      developer.log("Top Headline News: ${response.requestOptions.path}");
       return TopHeadingModel.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiExceptions(

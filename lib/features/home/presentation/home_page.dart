@@ -1,20 +1,78 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:news_app/core/extensions/sized_box.dart';
-import 'package:news_app/features/home/providers/news_provider.dart';
-import 'package:news_app/features/news_details/presentation/news_details_page.dart';
-import 'package:news_app/widgets/buttons/view_all.dart';
-import 'package:news_app/widgets/text_avatar.dart';
 
-class HomePage extends ConsumerWidget {
+import '/core/extensions/sized_box.dart';
+import '/core/extensions/string.dart';
+import '/features/home/presentation/news_body.dart';
+import '/features/home/providers/news_provider.dart';
+import '/features/news_details/presentation/news_details_page.dart';
+
+//ToDo:
+// 1. load more articles ✔️
+// 2. pull to refresh ✔️
+// 3. Search in "v2/everything?q=$searchKeyWord" API in new window
+// 4. filter top-headlines by selected-category ✔️
+// 5. check internet connection
+
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final screenSize = MediaQuery.sizeOf(context);
+  ConsumerState<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends ConsumerState<HomePage>
+    with AutomaticKeepAliveClientMixin {
+  Timer? _debounce;
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        if (_debounce?.isActive ?? false) {
+          _debounce!.cancel();
+        }
+        _debounce = Timer(const Duration(milliseconds: 500), () {
+          if (!ref
+              .read(
+                topHeadlineNewsProvider(ref.watch(selectedCategoryProvider)),
+              )
+              .isLoading) {
+            ref
+                .watch(
+                  topHeadlineNewsProvider(
+                    ref.watch(selectedCategoryProvider),
+                  ).notifier,
+                )
+                .fetchTopHeadlineNews();
+          }
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _debounce!.cancel();
+    super.dispose();
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+
     final screenPadding = MediaQuery.paddingOf(context);
     final screenTheme = Theme.of(context);
-    final screenTextTheme = TextTheme.of(context);
 
     // Selected Category
     final selectedCategory = ref.watch(selectedCategoryProvider);
@@ -22,16 +80,18 @@ class HomePage extends ConsumerWidget {
     final categories = ref.watch(categoriesList);
 
     // Top Headline News
-    final topHeadlineNews = ref.watch(topHeadlineNewsProvider);
+    final topHeadlineNews = ref.watch(
+      topHeadlineNewsProvider(selectedCategory),
+    );
 
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      body: RefreshIndicator(
+        onRefresh: () async => ref.invalidate(topHeadlineNewsProvider),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
-          spacing: 15,
+          spacing: 15.0,
           children: [
             Padding(
               padding: EdgeInsetsGeometry.symmetric(
@@ -40,69 +100,59 @@ class HomePage extends ConsumerWidget {
             ),
 
             //ToDo: Search Bar
-            const TextField(
-              decoration: InputDecoration(
-                hintText: 'Search',
-                prefixIcon: Icon(Icons.search),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: 'Search',
+                  prefixIcon: Icon(Icons.search),
+                ),
               ),
             ),
 
             //* Categories Chip
-            SizedBox(
-              height: 50,
-              child: ListView.separated(
-                itemCount: categories.length,
-                scrollDirection: Axis.horizontal,
-                separatorBuilder: (_, index) => 8.width,
-                itemBuilder: (_, index) => ActionChip(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  label: Text(categories[index].category),
-                  onPressed: () =>
-                      selectedCategoryN.update((_) => categories[index]),
-                  backgroundColor: selectedCategory == categories[index]
-                      ? screenTheme.colorScheme.primary.withOpacity(0.9)
-                      : screenTheme.colorScheme.onPrimaryContainer,
-                  chipAnimationStyle: ChipAnimationStyle(
-                    enableAnimation: const AnimationStyle(
-                      duration: Duration(seconds: 3),
-                      curve: Curves.easeInOut,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: SizedBox(
+                height: 50,
+                child: ListView.separated(
+                  itemCount: categories.length,
+                  scrollDirection: Axis.horizontal,
+                  separatorBuilder: (_, index) => 8.width,
+                  itemBuilder: (_, index) => ActionChip(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    label: Text(categories[index].toTitleCase),
+                    onPressed: () =>
+                        selectedCategoryN.update((_) => categories[index]),
+                    backgroundColor: selectedCategory == categories[index]
+                        ? screenTheme.colorScheme.primary.withOpacity(0.9)
+                        : screenTheme.colorScheme.onPrimaryContainer,
+                    chipAnimationStyle: ChipAnimationStyle(
+                      enableAnimation: const AnimationStyle(
+                        duration: Duration(seconds: 3),
+                        curve: Curves.easeInOut,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-            12.0.width,
-
-            //* Top Headline News Section
-            // ToDo: Top Headline News View All Button
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  'Top Heading',
-                  style: screenTextTheme.titleLarge!.copyWith(),
-                  textAlign: TextAlign.left,
-                ),
-                const Spacer(),
-                ViewAllButton(
-                  onPressed: () {},
-                ),
-              ],
-            ),
-            12.0.width,
 
             //* Top Headline News List
-            // /***
-            SizedBox(
-              height: screenSize.height / 3,
+            Expanded(
               child: topHeadlineNews.when(
+                skipLoadingOnRefresh: false,
+                error: (e, s) => Center(child: Text(e.toString())),
+                loading: () => const Center(child: CircularProgressIndicator()),
                 data: (data) => ListView.separated(
-                  scrollDirection: Axis.horizontal,
+                  controller: _scrollController,
+                  cacheExtent: 50,
+                  addAutomaticKeepAlives: true,
                   itemCount: data!.length,
+                  separatorBuilder: (_, index) => 16.height,
                   itemBuilder: (_, index) => InkWell(
                     onTap: () => Navigator.push(
                       context,
@@ -112,84 +162,11 @@ class HomePage extends ConsumerWidget {
                         ),
                       ),
                     ),
-                    child: SizedBox(
-                      width: screenSize.width - 100,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        spacing: 10.0,
-                        children: [
-                          Container(
-                            width: screenSize.width - 100,
-                            height: screenSize.height / 5,
-                            decoration: BoxDecoration(
-                              color: screenTheme.colorScheme.outline
-                                  .withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(35.0),
-                              image: DecorationImage(
-                                image: NetworkImage(
-                                  '${data[index].urlToImage}',
-                                ),
-                                onError: (_, _) => const AssetImage(
-                                  'assets/images/error_image.png',
-                                ),
-                                filterQuality: FilterQuality.medium,
-                                fit: BoxFit.fitHeight,
-                                alignment: Alignment.center,
-                              ),
-                            ),
-                            alignment: Alignment.bottomLeft,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 12,
-                            ),
-                            child: TextAvatar(
-                              color: screenTheme.colorScheme.onPrimary,
-                              title: data[index].source!.name.toString(),
-                            ),
-                          ),
-                          Text(
-                            data[index].title.toString(),
-                            style: screenTextTheme.titleMedium!.copyWith(
-                              color: screenTheme.colorScheme.outline,
-                              height: 1.5,
-                              overflow: TextOverflow.visible,
-                              fontSize: 14,
-                            ),
-                            overflow: TextOverflow.visible,
-                            softWrap: true,
-                            maxLines: 5,
-                          ),
-                          TextAvatar(
-                            color:
-                                screenTheme.colorScheme.onPrimaryFixedVariant,
-                            title: data[index].author.toString(),
-                            author: true,
-                          ),
-                        ],
-                      ),
-                    ),
+                    child: NewsBody(article: data[index]),
                   ),
-                  separatorBuilder: (_, index) => 16.width,
-                ),
-                error: (e, s) => Center(
-                  child: Text(e.toString()),
-                ),
-                loading: () => const Center(
-                  child: CircularProgressIndicator(),
                 ),
               ),
             ),
-            // ***/
-
-            //ToDo: News List
-            //! Source of the article (e.g. TechCrunch)
-            //! Author of the article (e.g. Mark Johnson)
-            //! Title of the article
-            //! Subtitle of the article - this shouldn't exceed 2 lines and should be truncated if it does
-            //! Published date in the format MM/DD/YYYY (e.g. 12/02/2020)
-            //! Image for the article provided by the News API
           ],
         ),
       ),

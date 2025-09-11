@@ -347,7 +347,7 @@ class MaterialTheme {
     canvasColor: colorScheme.surface,
 
     inputDecorationTheme: InputDecorationTheme(
-      fillColor: Colors.grey.shade200,
+      fillColor: Colors.grey.shade300,
       filled: true,
       enabledBorder: kOutlineInputBorder,
       border: kOutlineInputBorder,

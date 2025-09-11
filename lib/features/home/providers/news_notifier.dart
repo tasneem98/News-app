@@ -3,60 +3,39 @@ import 'package:news_app/features/home/data/model/top_heading_model.dart';
 import 'package:news_app/features/home/data/top_headline_repository.dart';
 
 class NewsNotifier extends StateNotifier<AsyncValue<List<Articles>?>> {
+  final String category;
   final ApiRepository _apiRepository;
 
-  final int _page = 1;
+  int _page = 1;
 
   bool _isLoading = false;
 
-  NewsNotifier(this._apiRepository) : super(const AsyncValue.loading()) {
+  NewsNotifier(this._apiRepository, this.category)
+    : super(const AsyncValue.loading()) {
     fetchTopHeadlineNews();
   }
 
+  // Fetch Top Headline News
   Future<void> fetchTopHeadlineNews() async {
     if (_isLoading) return;
     _isLoading = true;
 
     try {
+      final currentArticles = state.valueOrNull ?? [];
       state = await AsyncValue.guard(() async {
         final result = await _apiRepository.fetchTopHeadlineNews(
           page: _page,
-        );
-
-        final resultArticles = result.articles;
-        if (resultArticles == null) {
-          return [];
-        }
-
-        return [...resultArticles];
-      });
-    } on Exception catch (e, stackTrace) {
-      state = AsyncValue.error(e, stackTrace);
-    } finally {
-      _isLoading = false;
-    }
-  }
-
-  /*
-  Future<void> fetchTopHeadlineNews() async {
-    if (_isLoading) return;
-    _isLoading = true;
-
-    try {
-      final currentTopHeadlines = state.valueOrNull ?? [];
-
-      state = await AsyncValue.guard(() async {
-        final result = await _apiRepository.fetchTopHeadlineNews(
-          page: _page,
+          category: category,
         );
 
         final newArticles = result.articles;
         if (newArticles == null) {
-          return [...currentTopHeadlines];
+          return [...currentArticles];
         }
+
         _page++;
 
-        return [...currentTopHeadlines, ...newArticles];
+        return [...currentArticles, ...newArticles];
       });
     } on Exception catch (e, stackTrace) {
       state = AsyncValue.error(e, stackTrace);
@@ -64,5 +43,4 @@ class NewsNotifier extends StateNotifier<AsyncValue<List<Articles>?>> {
       _isLoading = false;
     }
   }
-*/
 }
