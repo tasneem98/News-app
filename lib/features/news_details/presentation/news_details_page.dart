@@ -3,6 +3,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 class NewsDetailsPage extends StatefulWidget {
   const NewsDetailsPage({super.key, required this.newsUrl});
+
   final String newsUrl;
 
   @override

@@ -10,5 +10,6 @@ class DioClient {
       receiveTimeout: const Duration(seconds: 30),
     ),
   );
+
   Dio get dio => _dio;
 }

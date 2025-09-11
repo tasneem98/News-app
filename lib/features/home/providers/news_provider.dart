@@ -38,7 +38,3 @@ final topHeadlineNewsProvider = StateNotifierProvider.autoDispose
       (ref, category) =>
           NewsNotifier(ref.watch(apiRepositoryProvider), category),
     );
-
-//ToDo // Provider for fetching news by category
-
-//ToDo // Provider for fetching search news by keyword

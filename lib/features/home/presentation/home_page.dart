@@ -86,7 +86,8 @@ class _HomePageState extends ConsumerState<HomePage>
 
     return Scaffold(
       body: RefreshIndicator(
-        onRefresh: () async => ref.invalidate(topHeadlineNewsProvider),
+        onRefresh: () async =>
+            ref.refresh(topHeadlineNewsProvider(selectedCategory)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,15 +101,23 @@ class _HomePageState extends ConsumerState<HomePage>
             ),
 
             //ToDo: Search Bar
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search',
-                  prefixIcon: Icon(Icons.search),
-                ),
-              ),
-            ),
+            // Padding(
+            //   padding: EdgeInsets.symmetric(horizontal: 20),
+            //   child: GestureDetector(
+            //     onTap: () => showSearch(
+            //       context: context,
+            //       delegate: NewsSearch(),
+            //     ),
+            //     child: TextField(
+            //       onChanged: null,
+            //       enabled: false,
+            //       decoration: InputDecoration(
+            //         hintText: 'Search',
+            //         prefixIcon: Icon(Icons.search),
+            //       ),
+            //     ),
+            //   ),
+            // ),
 
             //* Categories Chip
             Padding(

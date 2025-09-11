@@ -350,6 +350,7 @@ class MaterialTheme {
       fillColor: Colors.grey.shade300,
       filled: true,
       enabledBorder: kOutlineInputBorder,
+      disabledBorder: kOutlineInputBorder,
       border: kOutlineInputBorder,
       focusedBorder: kOutlineInputBorder,
     ),
