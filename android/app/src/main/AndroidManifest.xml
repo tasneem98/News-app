@@ -1,11 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+        // network permission
+        <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:label="News App"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
-        // network permission
-        <uses-permission android:name="android.permission.INTERNET" />
 
         <activity
             android:name=".MainActivity"

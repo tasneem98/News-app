@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:news_app/core/extensions/sized_box.dart';
 import 'package:news_app/features/home/providers/news_provider.dart';
+import 'package:news_app/features/news_details/presentation/news_details_page.dart';
+import 'package:news_app/widgets/buttons/view_all.dart';
+import 'package:news_app/widgets/text_avatar.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -14,12 +17,12 @@ class HomePage extends ConsumerWidget {
     final screenTextTheme = TextTheme.of(context);
 
     // Selected Category
-    final _selectedCategory = ref.watch(selectedCategoryProvider);
-    final _selectedCategoryN = ref.watch(selectedCategoryProvider.notifier);
-    final _categoriesList = ref.watch(categoriesList);
+    final selectedCategory = ref.watch(selectedCategoryProvider);
+    final selectedCategoryN = ref.watch(selectedCategoryProvider.notifier);
+    final categories = ref.watch(categoriesList);
 
     // Top Headline News
-    final _topHeadlineNews = ref.watch(topHeadlineNewsProvider);
+    final topHeadlineNews = ref.watch(topHeadlineNewsProvider);
 
     return Scaffold(
       body: Padding(
@@ -40,7 +43,7 @@ class HomePage extends ConsumerWidget {
             const TextField(
               decoration: InputDecoration(
                 hintText: 'Search',
-                prefixIcon: const Icon(Icons.search),
+                prefixIcon: Icon(Icons.search),
               ),
             ),
 
@@ -48,7 +51,7 @@ class HomePage extends ConsumerWidget {
             SizedBox(
               height: 50,
               child: ListView.separated(
-                itemCount: _categoriesList.length,
+                itemCount: categories.length,
                 scrollDirection: Axis.horizontal,
                 separatorBuilder: (_, index) => 8.width,
                 itemBuilder: (_, index) => ActionChip(
@@ -56,10 +59,10 @@ class HomePage extends ConsumerWidget {
                     horizontal: 16,
                     vertical: 8,
                   ),
-                  label: Text(_categoriesList[index].category),
+                  label: Text(categories[index].category),
                   onPressed: () =>
-                      _selectedCategoryN.update((_) => _categoriesList[index]),
-                  backgroundColor: _selectedCategory == _categoriesList[index]
+                      selectedCategoryN.update((_) => categories[index]),
+                  backgroundColor: selectedCategory == categories[index]
                       ? screenTheme.colorScheme.primary.withOpacity(0.9)
                       : screenTheme.colorScheme.onPrimaryContainer,
                   chipAnimationStyle: ChipAnimationStyle(
@@ -93,15 +96,22 @@ class HomePage extends ConsumerWidget {
             12.0.width,
 
             //* Top Headline News List
+            // /***
             SizedBox(
               height: screenSize.height / 3,
-              child: _topHeadlineNews.when(
+              child: topHeadlineNews.when(
                 data: (data) => ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: data!.length,
                   itemBuilder: (_, index) => InkWell(
-                    //ToDo: Navigate to News Details Page
-                    onTap: () {},
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NewsDetailsPage(
+                          newsUrl: '${data[index].url}',
+                        ),
+                      ),
+                    ),
                     child: SizedBox(
                       width: screenSize.width - 100,
                       child: Column(
@@ -171,124 +181,18 @@ class HomePage extends ConsumerWidget {
                 ),
               ),
             ),
+            // ***/
 
-            //   height: screenSize.height / 2.5,
-            //   padding: const EdgeInsets.all(16),
-            //   child: Column(
-            //     mainAxisAlignment: MainAxisAlignment.end,
-            //     crossAxisAlignment: CrossAxisAlignment.start,
-            //     spacing: 15,
-            //     children: [
-            //       // Title of the article
-            //       // Author of the article (e.g. Mark Johnson)
-            //       Row(
-            //         mainAxisAlignment: MainAxisAlignment.start,
-            //         crossAxisAlignment: CrossAxisAlignment.center,
-            //         spacing: 5,
-            //         children: [
-            //           CircleAvatar(
-            //             backgroundColor:
-            //                 screenTheme.colorScheme.onPrimaryContainer,
-            //             radius: 10,
-            //           ),
-            //           Text(
-            //             "Gregory Svirnovskiy",
-            //             style: screenTextTheme.bodyMedium!.copyWith(
-            //               color: screenTheme.colorScheme.onPrimaryContainer,
-            //               fontWeight: FontWeight.w700,
-            //               overflow: TextOverflow.visible,
-            //             ),
-            //             maxLines: 2,
-            //           ),
-            //           const Spacer(),
-            //           Text(
-            //             DateTime.parse(
-            //               "2025-09-06T18:00:17Z",
-            //             ).differenceFromNow,
-            //             style: screenTextTheme.bodyMedium!.copyWith(
-            //               color: screenTheme.colorScheme.onPrimaryContainer,
-            //               fontWeight: FontWeight.w700,
-            //               overflow: TextOverflow.visible,
-            //             ),
-            //             maxLines: 2,
-            //           ),
-            //         ],
-            //       ),
-            //     ],
-            //   ),
-            // ),
+            //ToDo: News List
+            //! Source of the article (e.g. TechCrunch)
+            //! Author of the article (e.g. Mark Johnson)
+            //! Title of the article
+            //! Subtitle of the article - this shouldn't exceed 2 lines and should be truncated if it does
+            //! Published date in the format MM/DD/YYYY (e.g. 12/02/2020)
+            //! Image for the article provided by the News API
           ],
         ),
       ),
-    );
-  }
-}
-
-class ViewAllButton extends StatelessWidget {
-  const ViewAllButton({super.key, required this.onPressed});
-
-  final void Function()? onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.grey.shade200,
-        foregroundColor: Colors.grey.shade600,
-        elevation: 0.0,
-        textStyle: const TextStyle(
-          fontWeight: FontWeight.w700,
-          fontSize: 16,
-        ),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(10),
-          ),
-        ),
-      ),
-      onPressed: onPressed,
-      child: const Text('View All'),
-    );
-  }
-}
-
-class TextAvatar extends StatelessWidget {
-  TextAvatar({
-    super.key,
-    required this.color,
-    required this.title,
-    this.author = false,
-  });
-
-  final Color color;
-  final String title;
-  bool author;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      spacing: 10,
-      children: [
-        CircleAvatar(
-          backgroundColor: author ? Colors.transparent : color,
-          radius: 10,
-          child: author ? Icon(Icons.person, color: color) : null,
-        ),
-        Flexible(
-          child: Text(
-            title.toString(),
-            textAlign: TextAlign.right,
-            style: TextTheme.of(
-              context,
-            ).titleMedium!.copyWith(color: color),
-            softWrap: true,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-          ),
-        ),
-      ],
     );
   }
 }

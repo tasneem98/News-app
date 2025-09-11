@@ -1,11 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:news_app/features/home/data/api_repository.dart';
 import 'package:news_app/features/home/data/model/top_heading_model.dart';
+import 'package:news_app/features/home/data/top_headline_repository.dart';
 
 class NewsNotifier extends StateNotifier<AsyncValue<List<Articles>?>> {
   final ApiRepository _apiRepository;
 
-  int _page = 1;
+  final int _page = 1;
 
   bool _isLoading = false;
 

@@ -1,5 +1,5 @@
-import '/features/home/data/api_service.dart';
 import '/features/home/data/model/top_heading_model.dart';
+import '/features/home/data/top_headline_service.dart';
 
 class ApiRepository {
   final ApiService _apiService;
