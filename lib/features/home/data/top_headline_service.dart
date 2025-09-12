@@ -30,4 +30,24 @@ class ApiService {
       );
     }
   }
+
+  Future<TopHeadingModel> searchEverything({
+    required String keyword,
+    String language = 'en',
+  }) async {
+    final apiKey = await SecureStorageService().getDate(key: "api_key");
+
+    try {
+      final response = await dioClient.dio.get(
+        '/everything?q=$keyword&apiKey=$apiKey&language=$language',
+      );
+      return TopHeadingModel.fromJson(response.data);
+    } on DioException catch (e) {
+      throw ApiExceptions(
+        status: e.response!.statusCode.toString(),
+        code: e.error.toString(),
+        message: e.message.toString(),
+      );
+    }
+  }
 }

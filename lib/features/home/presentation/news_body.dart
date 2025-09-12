@@ -1,8 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:news_app/widgets/article_image.dart';
+import 'package:news_app/widgets/source_row.dart';
 
-import '/core/extensions/string.dart';
 import '/features/home/data/model/top_heading_model.dart';
+import '/widgets/autor_date_row.dart';
 
 class NewsBody extends StatelessWidget {
   const NewsBody({super.key, required this.article});
@@ -11,7 +12,6 @@ class NewsBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.sizeOf(context);
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
 
@@ -36,10 +36,9 @@ class NewsBody extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         spacing: 10.0,
         children: [
-          _buildArticleImage(
+          ArticleImage(
             //! Image for the article provided by the News API
-            '${article.urlToImage}',
-            screenSize: screenSize.height / 3.5,
+            urlToImage: '${article.urlToImage}',
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -74,133 +73,19 @@ class NewsBody extends StatelessWidget {
               ),
             ),
           ),
-          _buildAuthorDateRow(
+          AuthorDateRow(
             //! Author of the article
-            article.author ?? 'Unknown Author',
+            author: article.author ?? 'Unknown Author',
             //! Published date in the format MM/DD/YYYY
-            date: '${article.publishedAt}'.toDMYDate,
-            theme: theme,
-            textTheme: textTheme,
+            publishedAt: '${article.publishedAt}',
           ),
           const Divider(),
-          _buildSourceRow(
+          SourceRow(
             //! Source of the article (e.g. TechCrunch)
-            article.source!.name ?? 'Unknown Source',
-            theme: theme,
-            textTheme: textTheme,
+            title: article.source!.name ?? 'Unknown Source',
           ),
         ],
       ),
     );
   }
-
-  Widget _buildArticleImage(String imageUrl, {required double screenSize}) =>
-      SizedBox(
-        height: screenSize,
-        child: article.urlToImage != null
-            ? CachedNetworkImage(
-                imageUrl: imageUrl,
-                progressIndicatorBuilder: (_, _, progress) => Center(
-                  child: CircularProgressIndicator(
-                    value: progress.progress,
-                  ),
-                ),
-                errorWidget: (_, _, _) => Image.asset(
-                  'assets/images/error_image.png',
-                  width: double.infinity,
-                  height: 100,
-                ),
-                fit: BoxFit.fitWidth,
-                width: double.infinity,
-                alignment: Alignment.topRight,
-              )
-            : Image.asset(
-                'assets/images/error_image.png',
-                width: double.infinity,
-                height: 100,
-              ),
-      );
-
-  Widget _buildAuthorDateRow(
-    String author, {
-    required String date,
-    required ThemeData theme,
-    required TextTheme textTheme,
-  }) => Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    crossAxisAlignment: CrossAxisAlignment.center,
-    spacing: 10,
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      CircleAvatar(
-        backgroundColor: Colors.grey.shade300,
-        child: Icon(
-          Icons.person,
-          color: theme.colorScheme.onPrimaryFixedVariant,
-        ),
-      ),
-      Flexible(
-        child: Text(
-          author,
-          textAlign: TextAlign.right,
-          style: textTheme.titleMedium!.copyWith(
-            color: theme.colorScheme.onPrimaryFixedVariant,
-          ),
-          softWrap: true,
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
-        ),
-      ),
-      const Spacer(),
-      Text(
-        date,
-        textAlign: TextAlign.right,
-        style: textTheme.titleMedium!.copyWith(
-          color: theme.colorScheme.onPrimaryFixedVariant,
-        ),
-      ),
-    ],
-  );
-
-  Widget _buildSourceRow(
-    String title, {
-    required ThemeData theme,
-    required TextTheme textTheme,
-  }) => Container(
-    margin: const EdgeInsets.symmetric(horizontal: 10),
-    padding: const EdgeInsets.all(10),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(50),
-      color: Colors.grey.shade300,
-      boxShadow: [
-        BoxShadow(color: Colors.grey.shade500, blurRadius: 10),
-      ],
-    ),
-
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      spacing: 10,
-      children: [
-        Icon(
-          Icons.source_sharp,
-          color: theme.colorScheme.primary,
-          size: 20,
-        ),
-        Flexible(
-          child: Text(
-            title,
-            textAlign: TextAlign.right,
-            style: textTheme.titleMedium!.copyWith(
-              color: theme.colorScheme.primary,
-            ),
-            softWrap: true,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-          ),
-        ),
-      ],
-    ),
-  );
 }

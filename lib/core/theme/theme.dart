@@ -346,6 +346,13 @@ class MaterialTheme {
     scaffoldBackgroundColor: colorScheme.surface,
     canvasColor: colorScheme.surface,
 
+    appBarTheme: AppBarTheme(
+      elevation: 5.0,
+      backgroundColor: colorScheme.surface,
+    ),
+
+    cardTheme: const CardThemeData(elevation: 12.0),
+
     inputDecorationTheme: InputDecorationTheme(
       fillColor: Colors.grey.shade300,
       filled: true,
@@ -353,6 +360,11 @@ class MaterialTheme {
       disabledBorder: kOutlineInputBorder,
       border: kOutlineInputBorder,
       focusedBorder: kOutlineInputBorder,
+    ),
+
+    searchViewTheme: SearchViewThemeData(
+      backgroundColor: colorScheme.surface,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     ),
 
     chipTheme: ChipThemeData(

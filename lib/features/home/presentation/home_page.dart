@@ -6,13 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '/core/extensions/sized_box.dart';
 import '/core/extensions/string.dart';
 import '/features/home/presentation/news_body.dart';
+import '/features/home/presentation/news_search_delegates.dart';
 import '/features/home/providers/news_provider.dart';
 import '/features/news_details/presentation/news_details_page.dart';
 
 //ToDo:
 // 1. load more articles ✔️
 // 2. pull to refresh ✔️
-// 3. Search in "v2/everything?q=$searchKeyWord" API in new window
+// 3. Search in "v2/everything?q=$searchKeyWord" API in new window ✔️
 // 4. filter top-headlines by selected-category ✔️
 // 5. check internet connection
 
@@ -100,24 +101,24 @@ class _HomePageState extends ConsumerState<HomePage>
               ),
             ),
 
-            //ToDo: Search Bar
-            // Padding(
-            //   padding: EdgeInsets.symmetric(horizontal: 20),
-            //   child: GestureDetector(
-            //     onTap: () => showSearch(
-            //       context: context,
-            //       delegate: NewsSearch(),
-            //     ),
-            //     child: TextField(
-            //       onChanged: null,
-            //       enabled: false,
-            //       decoration: InputDecoration(
-            //         hintText: 'Search',
-            //         prefixIcon: Icon(Icons.search),
-            //       ),
-            //     ),
-            //   ),
-            // ),
+            //* Search Bar
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: GestureDetector(
+                onTap: () => showSearch(
+                  context: context,
+                  delegate: NewsSearch(),
+                ),
+                child: const TextField(
+                  onChanged: null,
+                  enabled: false,
+                  decoration: InputDecoration(
+                    hintText: 'Search',
+                    prefixIcon: Icon(Icons.search),
+                  ),
+                ),
+              ),
+            ),
 
             //* Categories Chip
             Padding(

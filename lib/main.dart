@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:news_app/core/services/secure_storage_service.dart';
-import 'package:news_app/features/home/presentation/home_page.dart';
 
+import '/core/services/secure_storage_service.dart';
+import '/features/home/presentation/home_page.dart';
 import 'core/theme/theme.dart';
 import 'core/theme/util.dart';
 

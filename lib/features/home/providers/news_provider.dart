@@ -38,3 +38,12 @@ final topHeadlineNewsProvider = StateNotifierProvider.autoDispose
       (ref, category) =>
           NewsNotifier(ref.watch(apiRepositoryProvider), category),
     );
+
+//* Search News
+final searchNewsProvider = FutureProvider.autoDispose
+    .family<List<Articles>?, String>((ref, keyword) async {
+      final repo = await ref
+          .watch(apiRepositoryProvider)
+          .searchEverything(keyword: keyword);
+      return repo.articles ?? [];
+    });

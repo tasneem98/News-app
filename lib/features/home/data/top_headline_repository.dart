@@ -15,4 +15,10 @@ class ApiRepository {
     category: category,
     country: country,
   );
+
+  Future<TopHeadingModel> searchEverything({
+    required String keyword,
+    String language = 'en',
+  }) async =>
+      _apiService.searchEverything(keyword: keyword, language: language);
 }
