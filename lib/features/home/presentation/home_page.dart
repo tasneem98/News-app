@@ -163,7 +163,7 @@ class _HomePageState extends ConsumerState<HomePage>
                 error: (e, s) => Center(child: Text(e.toString())),
                 loading: () => const Center(child: CircularProgressIndicator()),
                 data: (data) => ListView.separated(
-                  padding: EdgeInsets.symmetric(vertical: 25),
+                  padding: const EdgeInsets.symmetric(vertical: 25),
                   controller: _scrollController,
                   cacheExtent: 50,
                   addAutomaticKeepAlives: true,
