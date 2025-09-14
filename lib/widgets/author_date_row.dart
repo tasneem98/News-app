@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:news_app/core/extensions/string.dart';
+import '/core/extensions/string.dart';
 
 class AuthorDateRow extends StatelessWidget {
   const AuthorDateRow({

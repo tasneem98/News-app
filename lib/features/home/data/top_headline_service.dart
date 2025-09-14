@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:news_app/core/services/secure_storage_service.dart';
-import 'package:news_app/features/home/data/model/top_heading_model.dart';
+import '/core/services/secure_storage_service.dart';
+import '/features/home/data/model/top_heading_model.dart';
 
 import '/core/network/api_exceptions.dart';
 import '/core/network/dio_client.dart';

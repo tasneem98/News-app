@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:news_app/features/home/data/model/top_heading_model.dart';
-import 'package:news_app/features/home/data/top_headline_repository.dart';
+import '/features/home/data/model/top_heading_model.dart';
+import '/features/home/data/top_headline_repository.dart';
 
 class NewsNotifier extends StateNotifier<AsyncValue<List<Articles>?>> {
   final String category;

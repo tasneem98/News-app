@@ -114,7 +114,11 @@ class _HomePageState extends ConsumerState<HomePage>
                   enabled: false,
                   decoration: InputDecoration(
                     hintText: 'Search',
-                    prefixIcon: Icon(Icons.search),
+                    hintStyle: TextStyle(color: Colors.black),
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
               ),
@@ -135,8 +139,9 @@ class _HomePageState extends ConsumerState<HomePage>
                       vertical: 8,
                     ),
                     label: Text(categories[index].toTitleCase),
-                    onPressed: () =>
-                        selectedCategoryN.update((_) => categories[index]),
+                    onPressed: () => selectedCategoryN.update(
+                      (_) => categories[index],
+                    ),
                     backgroundColor: selectedCategory == categories[index]
                         ? screenTheme.colorScheme.primary.withOpacity(0.9)
                         : screenTheme.colorScheme.onPrimaryContainer,
@@ -158,6 +163,7 @@ class _HomePageState extends ConsumerState<HomePage>
                 error: (e, s) => Center(child: Text(e.toString())),
                 loading: () => const Center(child: CircularProgressIndicator()),
                 data: (data) => ListView.separated(
+                  padding: EdgeInsets.symmetric(vertical: 25),
                   controller: _scrollController,
                   cacheExtent: 50,
                   addAutomaticKeepAlives: true,

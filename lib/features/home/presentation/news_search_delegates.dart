@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '/features/home/providers/news_provider.dart';
 import '/features/news_details/presentation/news_details_page.dart';
-import '/widgets/autor_date_row.dart';
+import '/widgets/author_date_row.dart';
 
 class NewsSearch extends SearchDelegate {
   @override
@@ -44,7 +44,15 @@ class NewsSearch extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) {
     // Build the search results
-
+    if (query.isEmpty) {
+      return Center(
+        child: Text(
+          'What are you looking for?',
+          style: TextTheme.of(context).bodyLarge,
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
     return Consumer(
       builder: (context, ref, _) {
         final articles = ref.watch(searchNewsProvider(query));

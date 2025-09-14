@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:news_app/widgets/article_image.dart';
-import 'package:news_app/widgets/source_row.dart';
+import '/widgets/article_image.dart';
+import '/widgets/source_row.dart';
 
 import '/features/home/data/model/top_heading_model.dart';
-import '/widgets/autor_date_row.dart';
+import '/widgets/author_date_row.dart';
 
 class NewsBody extends StatelessWidget {
   const NewsBody({super.key, required this.article});

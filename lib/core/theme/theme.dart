@@ -370,7 +370,10 @@ class MaterialTheme {
     chipTheme: ChipThemeData(
       elevation: 5.0,
       backgroundColor: colorScheme.primary,
-      labelStyle: textTheme.labelLarge!.copyWith(color: colorScheme.onPrimary),
+      labelStyle: textTheme.labelLarge!.copyWith(
+        color: colorScheme.onPrimary,
+        fontSize: 16,
+      ),
     ),
   );
 

@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:news_app/core/network/dio_client.dart';
-import 'package:news_app/features/home/data/model/top_heading_model.dart';
-import 'package:news_app/features/home/data/top_headline_repository.dart';
-import 'package:news_app/features/home/data/top_headline_service.dart';
-import 'package:news_app/features/home/providers/news_notifier.dart';
+import '/core/network/dio_client.dart';
+import '/features/home/data/model/top_heading_model.dart';
+import '/features/home/data/top_headline_repository.dart';
+import '/features/home/data/top_headline_service.dart';
+import '/features/home/providers/news_notifier.dart';
 
 //* News Categories List
 final categoriesList = Provider<List<String>>(
