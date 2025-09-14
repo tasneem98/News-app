@@ -130,7 +130,7 @@ lib/
 2.  **Navigate to the project directory:**
     Change your current directory to the project folder:
 ```
-cd news_mobile_app
+cd news_app
 ```    
 
 3.  **Run the application:**
